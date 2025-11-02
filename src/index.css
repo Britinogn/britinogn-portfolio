@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+/* small defaults so UI doesn't look broken */
+html, body, #root {
+    height: 100%;
+}
+body {
+    @apply bg-gray-50 text-gray-900;
+    margin: 0;
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
