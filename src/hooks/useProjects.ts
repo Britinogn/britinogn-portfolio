@@ -1,14 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Project } from '../types';
-import projectService from '../services/projectService';
+import projectService from '../services/projectAPI';
 
 function useProjects() {
     const [projects, setProjects] = useState<Project[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        async function fetchProjects() {
+    // Extract fetchProjects to make it reusable
+    async function fetchProjects() {
         try {
             setLoading(true);
             const data = await projectService.getAllProjects();
@@ -20,12 +20,15 @@ function useProjects() {
         } finally {
             setLoading(false);
         }
-        }
+    }
 
+    useEffect(() => {
         fetchProjects();
     }, []);
 
-    return { projects, loading, error };
+    const refetch = useCallback(() => fetchProjects(), []);
+
+    return { projects, loading, error, refetch };
 }
 
 export default useProjects;

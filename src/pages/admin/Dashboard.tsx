@@ -10,40 +10,22 @@ import {
   ExclamationCircleIcon
 } from '@heroicons/react/24/outline';
 import dashboardService from '../../services/dashboardService';
-import { DashboardData,  Contact, GithubStats } from '../../types';
+import { DashboardData,  Contact} from '../../types';
 //import useAuth from '../../hooks/useAuth';
 
 function Dashboard() {
   const [data, setData] = useState<DashboardData | null>(null);
-  const [githubStats, setGithubStats] = useState<GithubStats | null>(null);
+  //const [githubStats, setGithubStats] = useState<GithubStats | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   //const { user } = useAuth();
-
   useEffect(() => {
     async function fetchDashboard() {
       try {
         setLoading(true);
-        
-        // Fetch dashboard data
         const dashboardData = await dashboardService.getDashboardData();
+        console.log('Dashboard data:', dashboardData);
         setData(dashboardData);
-        
-        // Fetch GitHub stats separately
-        try {
-          const stats = await dashboardService.getGithubStats();
-          console.log('GitHub stats raw response:', stats);
-          if (stats) {
-            setGithubStats(stats);
-            console.log('GitHub stats set successfully:', stats);
-          } else {
-            console.warn('GitHub stats returned undefined/null');
-          }
-        } catch (githubError) {
-          console.error('Failed to fetch GitHub stats:', githubError);
-          // Continue without GitHub stats - dashboard still works
-        }
-        
       } catch (err) {
         if (err instanceof Error) {
           setError(err.message);
@@ -88,6 +70,7 @@ function Dashboard() {
   }
 
   const stats = data?.stats;
+  const githubStats = data?.github;
 
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-indigo-50">
@@ -148,6 +131,7 @@ function Dashboard() {
         {githubStats && (
           <div className="relative group mb-8">
             <div className="absolute -inset-1 bg-linear-to-r from-purple-600 via-pink-600 to-blue-600 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-1000"></div>
+            
             <div className="relative bg-linear-to-br from-slate-900 via-purple-900 to-slate-900 text-white p-8 rounded-2xl shadow-2xl overflow-hidden">
               <div className="absolute top-0 right-0 -mt-4 -mr-4 w-64 h-64 bg-linear-to-br from-blue-500/10 to-purple-500/10 rounded-full blur-3xl"></div>
               <div className="absolute bottom-0 left-0 -mb-4 -ml-4 w-64 h-64 bg-linear-to-tr from-pink-500/10 to-orange-500/10 rounded-full blur-3xl"></div>
@@ -207,9 +191,9 @@ function Dashboard() {
                   <p className="text-sm text-gray-600">Recent inquiries and feedback</p>
                 </div>
               </div>
-              {stats?.unreadContacts > 0 && (
+              {(stats?.unreadContacts ?? 0) > 0 && (
                 <span className="px-4 py-2 bg-red-500 text-white rounded-full text-sm font-semibold animate-pulse">
-                  {stats?.unreadContacts} New
+                  {stats!.unreadContacts} New
                 </span>
               )}
             </div>
@@ -217,7 +201,7 @@ function Dashboard() {
           {data?.contacts && data.contacts.length > 0 ? (
             <div className="divide-y divide-gray-100">
               {data.contacts.map((contact: Contact) => (
-                <ContactItem key={contact.id} contact={contact} />
+                <ContactItem key={contact.id || contact._id} contact={contact} />
               ))}
             </div>
           ) : (
@@ -286,7 +270,7 @@ function GitHubStat({ label, value, icon }: GitHubStatProps) {
 
 // Activity List Component
 interface ActivityItem {
-  id: string;
+  _id: string;
   title: string;
   createdAt: string;
 }
@@ -316,7 +300,7 @@ function ActivityList({ title, items, icon: Icon, emptyMessage, color }: Activit
       {items.length > 0 ? (
         <div className="p-4 space-y-2">
           {items.map((item) => (
-            <div key={item.id} className="group p-4 rounded-xl hover:bg-gradient-to-r hover:from-gray-50 hover:to-blue-50 transition-all duration-200 border border-transparent hover:border-gray-200">
+            <div key={item._id } className="group p-4 rounded-xl hover:bg-gradient-to-r hover:from-gray-50 hover:to-blue-50 transition-all duration-200 border border-transparent hover:border-gray-200">
               <div className="flex justify-between items-start">
                 <div className="flex-1 min-w-0">
                   <p className="font-semibold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">{item.title}</p>
@@ -357,9 +341,12 @@ function ContactItem({ contact }: ContactItemProps) {
 
   return (
     <div 
-      className={`p-6 hover:bg-gradient-to-r hover:from-blue-50 hover:to-transparent transition-all duration-200 ${
-        isUnread ? 'bg-blue-50/50' : ''
-      }`}
+      className={`p-6 rounded-xl transition-all duration-200 
+        ${isUnread 
+          ? 'bg-blue-50/70 hover:bg-blue-100' 
+          : 'bg-gray-50 hover:bg-gradient-to-r hover:from-gray-50 hover:to-transparent'
+        }`
+      }
     >
       <div className="flex items-start gap-4">
         <div className={`flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg ${

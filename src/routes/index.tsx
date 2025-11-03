@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import { ReactNode } from 'react';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 /* Public Routes */
 import Home from "../pages/public/Home";
@@ -63,7 +64,15 @@ function AppRoutes() {
                 }
             >
                 <Route index element={<Dashboard />} />
-                <Route path="projects" element={<ManageProjects />} />
+                
+                <Route path="projects" element={
+
+                    <ErrorBoundary>
+                        <ManageProjects />
+                    </ErrorBoundary>
+
+                }/>
+
                 <Route path="blogs" element={<ManageBlogs />} />
                 <Route path="contact" element={<ManageContact />} />
             </Route>

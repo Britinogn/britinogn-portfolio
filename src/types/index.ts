@@ -14,23 +14,25 @@ export interface AuthResponse  {
 }
 
 export interface Project {
-    id: string;
+    id: string; 
+    _id: string;
     title: string;
     description: string;
     techStack: string[];
     githubUrl: string;
     liveURL: string;
     imageURL: {
-        url: string;
-        public_id: string;
+        url: string | null ;
+        public_id: string | null;
     };
     category?:string
-    createdAt: Date;
-    updatedAt: Date;
+    yearBuilt?: number;
+    createdAt: string;
+    updatedAt: string;
 }
 
 export interface Blog {
-    id: string;
+    _id: string;
     title: string;
     description: string;
     url: string;
@@ -46,7 +48,8 @@ export interface Blog {
 }
 
 export interface Contact {
-    id: string;
+    id: string; 
+    _id:string;
     name: string;
     email: string;
     subject?: string;
@@ -57,6 +60,7 @@ export interface Contact {
 }
 
 export interface GithubStats {
+    id:string
     username: string;
     totalRepos: number;
     totalStars: number;
@@ -85,7 +89,7 @@ export interface DashboardStats {
 
 export interface DashboardData {
     stats: DashboardStats;
-    github: GithubStats[] | null;
+    github: GithubStats| null;
     projects: Project[];
     blogs: Blog[];
     contacts: Contact[];
