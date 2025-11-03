@@ -85,7 +85,7 @@ export interface DashboardStats {
 
 export interface DashboardData {
     stats: DashboardStats;
-    github: GithubStats | null;
+    github: GithubStats[] | null;
     projects: Project[];
     blogs: Blog[];
     contacts: Contact[];
@@ -94,7 +94,7 @@ export interface DashboardData {
 
 export interface RecentActivity {
     id: string;
-    type: 'project' | 'blog' | 'contact';
+    type: 'project' | 'blog' | 'contact' | 'github';
     createdAt: string;
     title?: string;
     name?: string;

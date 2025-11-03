@@ -11,14 +11,14 @@ import {
 } from '@heroicons/react/24/outline';
 import dashboardService from '../../services/dashboardService';
 import { DashboardData,  Contact, GithubStats } from '../../types';
-import useAuth from '../../hooks/useAuth';
+//import useAuth from '../../hooks/useAuth';
 
 function Dashboard() {
   const [data, setData] = useState<DashboardData | null>(null);
   const [githubStats, setGithubStats] = useState<GithubStats | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const { user } = useAuth();
+  //const { user } = useAuth();
 
   useEffect(() => {
     async function fetchDashboard() {
@@ -60,7 +60,7 @@ function Dashboard() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+      <div className="flex justify-center items-center min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-indigo-50">
         <div className="relative">
           <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
           <div className="absolute inset-0 flex items-center justify-center">
@@ -73,10 +73,10 @@ function Dashboard() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center p-4">
         <div className="bg-white border-l-4 border-red-500 p-6 rounded-xl shadow-2xl max-w-md">
           <div className="flex items-start">
-            <ExclamationCircleIcon className="h-6 w-6 text-red-500 mr-3 flex-shrink-0" />
+            <ExclamationCircleIcon className="h-6 w-6 text-red-500 mr-3 shrink-0" />
             <div>
               <h3 className="text-lg font-semibold text-gray-900 mb-1">Something went wrong</h3>
               <p className="text-gray-600">{error}</p>
@@ -96,10 +96,10 @@ function Dashboard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-5xl font-bold mb-2 drop-shadow-lg">Welcome Back, {user?.name} !</h1>
-              <p className="text-xl text-blue-100">Here's what's happening with your portfolio today</p>
+              <h1 className="text-5xl  font-bold mb-2 drop-shadow-lg">Welcome Back {} !</h1>
+              <p className="text-xl  text-blue-100">Here's what's happening with your portfolio today</p>
             </div>
-            <div className="hidden lg:block">
+            <div className=" lg:block">
               <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
                 <div className="text-center">
                   <p className="text-3xl font-bold mb-1">{new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</p>
@@ -209,7 +209,7 @@ function Dashboard() {
               </div>
               {stats?.unreadContacts > 0 && (
                 <span className="px-4 py-2 bg-red-500 text-white rounded-full text-sm font-semibold animate-pulse">
-                  {stats.unreadContacts} New
+                  {stats?.unreadContacts} New
                 </span>
               )}
             </div>

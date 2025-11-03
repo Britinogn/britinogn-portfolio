@@ -50,7 +50,7 @@ function Sidebar({ isOpen, onClose }: SidebarProps) {
         className={`
           fixed lg:static inset-y-0 left-0 z-50
           w-72 bg-linear-to-br from-gray-900 via-gray-800 to-gray-900 text-white 
-          min-h-screen shadow-2xl
+          min-h-screen shadow-2xl 
           transform transition-transform duration-300 ease-in-out
           ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
@@ -59,8 +59,8 @@ function Sidebar({ isOpen, onClose }: SidebarProps) {
         <div className="p-6 border-b border-gray-700/50">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-linear-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
-                <Cog6ToothIcon className="w-6 h-6 text-white" />
+              <div className="w-10 h-10  bg-linear-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
+                <Cog6ToothIcon className="w-6 h-6 text-white " />
               </div>
               <div>
                 <h2 className="text-xl font-bold text-white">Admin Panel</h2>
@@ -71,7 +71,7 @@ function Sidebar({ isOpen, onClose }: SidebarProps) {
             {/* Close button for mobile */}
             <button 
               onClick={onClose}
-              className="lg:hidden p-2 hover:bg-gray-700 rounded-lg transition-colors"
+              className="lg:hidden  cursor-pointer p-2 hover:bg-gray-700 rounded-lg transition-colors"
               aria-label="Close sidebar"
             >
               <XMarkIcon className="w-5 h-5" />

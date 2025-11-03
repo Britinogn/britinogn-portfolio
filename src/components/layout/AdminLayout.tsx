@@ -15,13 +15,13 @@ function AdminLayout() {
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex h-screen overflow-hidden bg-gray-50">
       <Sidebar isOpen={isSidebarOpen} onClose={closeSidebar} />
       
-      <div className="flex-1 flex flex-col w-full lg:w-auto">
+      <div className="flex-1 flex flex-col overflow-hidden">
         <Topbar onMenuClick={toggleSidebar} />
         
-        <main className="flex-1 p-4 lg:p-8 overflow-y-auto">
+        <main className="flex-1 overflow-y-auto p-4 lg:p-8">
           <Outlet />
         </main>
       </div>

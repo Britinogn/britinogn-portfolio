@@ -9,17 +9,17 @@ function useBlogs() {
 
     useEffect(() => {
         async function fetchBlogs() {
-        try {
-            setLoading(true);
-            const data = await blogService.getAllBlogs();
-            setBlogs(data);
-            setError(null);
-        } catch (err) {
-            setError('Failed to fetch blogs');
-            console.error(err);
-        } finally {
-            setLoading(false);
-        }
+            try {
+                setLoading(true);
+                const data = await blogService.getAllBlogs();
+                setBlogs(data);
+                setError(null);
+            } catch (err) {
+                setError('Failed to fetch blogs');
+                console.error(err);
+            } finally {
+                setLoading(false);
+            }
         }
 
         fetchBlogs();
