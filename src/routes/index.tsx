@@ -73,7 +73,12 @@ function AppRoutes() {
 
                 }/>
 
-                <Route path="blogs" element={<ManageBlogs />} />
+                <Route path="blogs" element={
+                    <ErrorBoundary>
+                        <ManageBlogs />
+                    </ErrorBoundary>          
+                }/>
+                
                 <Route path="contact" element={<ManageContact />} />
             </Route>
 

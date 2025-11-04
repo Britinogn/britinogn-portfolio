@@ -35,7 +35,7 @@ function ProjectModal({ project, onSuccess, isEdit }: ProjectModalProps) {
         }));
     };
 
-    const handleTechChange = (selected: string[]) => {
+    const handleTechChange = (selected: string) => {
         setFormData(prev => ({
         ...prev,
         techStack: selected,
@@ -58,7 +58,7 @@ function ProjectModal({ project, onSuccess, isEdit }: ProjectModalProps) {
         const fd = new FormData();
         fd.append('title', formData.title);
         fd.append('description', formData.description);
-        fd.append('techStack', JSON.stringify(formData.techStack));
+        fd.append('techStack', formData.techStack);
         fd.append('githubUrl', formData.githubUrl);
         fd.append('liveURL', formData.liveURL);
         if (formData.category) fd.append('category', formData.category);
@@ -66,7 +66,7 @@ function ProjectModal({ project, onSuccess, isEdit }: ProjectModalProps) {
         
         // Handle image: Append File if new, skip if existing object (backend retains old)
         if (formData.imageURL instanceof File) {
-        fd.append('imageURL', formData.imageURL);
+            fd.append('imageURL', formData.imageURL);
         } // Else: No append—keeps existing image on update
         
         return fd;
@@ -76,32 +76,32 @@ function ProjectModal({ project, onSuccess, isEdit }: ProjectModalProps) {
         e.preventDefault();
         const error = validateForm();
         if (error) {
-        alert(error);
-        return;
+            alert(error);
+            return;
         }
 
-        setLoading(true);
         const fd = buildFormData();
+        setLoading(true);
         try {
-        if (isEdit && project._id) {  // Mongoose uses _id
-            await ProjectAPI.updateProject(project._id, fd);
-        } else {
-            await ProjectAPI.createProject(fd);
-        }
+            if (isEdit && project?._id) {
+                await ProjectAPI.updateProject(project._id, fd);  // Pass FormData, not formData
+            } else {
+                await ProjectAPI.createProject(fd);  // Pass FormData, not formData
+            }
 
-        onSuccess?.();
-        console.log('Project saved!');
+            onSuccess?.();
+            console.log('Project saved!');
+
         } catch (err) {
-        console.error('Save failed:', err);
-        alert('Something went wrong—check console.');
+            console.error('Save failed:', err);
+            alert('Something went wrong—check console.');
         } finally {
-        setLoading(false);
+            setLoading(false);
         }
     }
-
     // Type guard: Narrow to backend image object
-    const isImageObject = (img: File | { url: string | null; public_id: string | null; } | null): img is { url: string | null; public_id: string | null; } => {
-        return img !== null && typeof img === 'object' && 'public_id' in img;
+    const isImageObject = (imageURL: File | { url: string | null; public_id: string | null; } | null): imageURL is { url: string | null; public_id: string | null; } => {
+        return imageURL !== null && typeof imageURL === 'object' && 'public_id' in imageURL;
     };
 
     return (
@@ -135,19 +135,18 @@ function ProjectModal({ project, onSuccess, isEdit }: ProjectModalProps) {
                 </div>
 
                 <div>
-                <label htmlFor="techStack" className="block text-sm font-medium mb-1">Tech Stack</label>
-                <select
-                    id="techStack"
-                    multiple
-                    value={formData.techStack}
-                    onChange={(e) => handleTechChange(Array.from(e.target.selectedOptions, opt => opt.value))}
-                    className="w-full border rounded px-2 py-1 h-20"
-                >
-                    <option value="React">React</option>
-                    <option value="TypeScript">TypeScript</option>
-                    <option value="Node.js">Node.js</option>
-                    <option value="MongoDB">MongoDB</option>
-                </select>
+                    <label htmlFor="techStack" className="block text-sm font-medium mb-1">Tech Stack</label>
+                    <input
+                        id="techStack"
+                        type="text"
+                        value={formData.techStack.join(', ')} // Assumes formData.techStack is string[]; join for display
+                        onChange={(e) => {
+                        const newTechs = e.target.value.split(',').map(tech => tech.trim()).filter(Boolean);
+                        handleTechChange(newTechs); // Pass array to your handler
+                        }}
+                        placeholder="e.g., React, Node.js, TypeScript"
+                        className="w-full border rounded px-2 py-1 h-20 resize-none" // Added resize-none to prevent vertical resize
+                    />
                 </div>
 
                 <div>

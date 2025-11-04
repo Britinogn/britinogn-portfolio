@@ -1,67 +1,48 @@
-// src/services/projectService.ts
 import api from './api';
-import { Project } from '../types';  // Your Project interface
-
-// Response types (like your dashboard ones)
-interface ProjectResponse {
-    message: string;
-    data: Project;
-}
+import { Project } from '../types';
 
 interface ProjectsResponse {
-    message: string;
-    data: Project[];  // For lists
+  message?: string;
+  projects?: Project[];
+  data?: Project[];
 }
 
-interface DeleteResponse {
-    message: string;
-    data?: Project;  // Optional: Some backends return deleted item
+interface ProjectResponse {
+  message?: string;
+  project?: Project;
+  data?: Project;
 }
 
-// GET: All projects
 async function getAllProjects(): Promise<Project[]> {
-    const response: ProjectsResponse = await api.get('/projects');
-    return response.data;
+  const response: ProjectsResponse = await api.get('/projects');
+  return (response.projects || response.data || []) as Project[];
 }
 
-// GET: Single project by ID
 async function getProjectById(id: string): Promise<Project> {
-    const response: ProjectResponse = await api.get(`/projects/${id}`);
-    return response.data;
+  const response: ProjectResponse = await api.get(`/projects/${id}`);
+  return (response.project || response.data) as Project;
 }
 
-// POST: Create project (with image upload via FormData)
-async function createProject(formData: FormData): Promise<Project> {
-    const response: ProjectResponse = await api.post('/projects', formData, {
-        headers: {
-        'Content-Type': 'multipart/form-data',  // For file upload
-        },
-    });
-    return response.data;
+async function createProject(projectData: Partial<Project> | FormData): Promise<Project> {
+  const response: ProjectResponse = await api.post('/projects', projectData);
+  return (response.project || response.data) as Project;
 }
 
-// PUT: Update project (with optional image re-upload via FormData)
-async function updateProject(id: string, formData: FormData): Promise<Project> {
-    const response: ProjectResponse = await api.put(`/projects/${id}`, formData, {
-        headers: {
-        'Content-Type': 'multipart/form-data',
-        },
-    });
-    return response.data;
+async function updateProject(id: string, projectData: Partial<Project> | FormData): Promise<Project> {
+  const response: ProjectResponse = await api.put(`/projects/${id}`, projectData);
+  return (response.project || response.data) as Project;
 }
 
-// DELETE: Delete project
-async function deleteProject(id: string): Promise<Project | undefined> {
-    const response: DeleteResponse = await api.delete(`/projects/${id}`);
-    return response.data;  // Optional return of deleted project
+async function deleteProject(id: string): Promise<void> {
+  await api.delete(`/projects/${id}`);
 }
 
-const projectAPI = {
-    getAllProjects,
-    getProjectById,
-    createProject,
-    updateProject,
-    deleteProject,
+const ProjectAPI = {
+  getAllProjects,
+  getProjectById,
+  createProject,
+  updateProject,
+  deleteProject,
 };
 
-export default projectAPI;
+export default ProjectAPI;

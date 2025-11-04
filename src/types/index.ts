@@ -14,11 +14,10 @@ export interface AuthResponse  {
 }
 
 export interface Project {
-    id: string; 
     _id: string;
     title: string;
     description: string;
-    techStack: string[];
+    techStack: string;
     githubUrl: string;
     liveURL: string;
     imageURL: {
